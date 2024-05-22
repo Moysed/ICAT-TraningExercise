@@ -1,0 +1,53 @@
+div>h1{
+    /* color: rgba(0, 0, 0, 0) */
+    color: #37ad37;
+}
+
+
+.text:hover{
+    color: red;
+    
+}
+
+.box{
+    background-color: blueviolet;
+    padding-top: 20px;
+    margin:20px;
+
+     max-width: 250px;
+}
+
+.big-box{
+    background-color: rgb(0, 0, 0);
+    padding: 20px;
+    margin-left: 20px;
+
+    width: 50%;
+}
+
+.grid-container{
+    padding: 10px;
+    display: grid;
+    grid-template-columns: auto auto;
+    background-color: rgb(107, 27, 164);
+}
+
+.grid-item{
+    padding: 10px;
+    margin: 10px;
+    background-color: antiquewhite;
+}
+
+.flex-container{
+    padding: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    background-color: chocolate;
+
+    justify-content:space-between;
+}
+
+.flex-item{
+    width: 150px;
+    background-color: aquamarine;
+}
