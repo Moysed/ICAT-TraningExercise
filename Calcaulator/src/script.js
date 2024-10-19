@@ -1,97 +1,106 @@
-let firstNum;
-let secNum;
+let firstNum = 0;
+let secondNum = 0;
 let step = 0;
-let operation;
-let result;
-
-let numArr = [];
-let secNumArr = [];
-
+let operation = null;
+let result = 0;
+let currentNumArr = [];
 let history = [];
+const display = document.getElementById('display');
+const historyDisplay = document.getElementById('history');
 
-let display = document.getElementById('display');
-let historyDisplay = document.getElementById('history');
-
-function updateHistoryDisplay() {
+function updateDisplay() {
+  display.textContent = step === 2 ? secondNum : firstNum;
   historyDisplay.value = history.join('');
 }
 
 function getFormula(num) {
   if (step === 0 || step === 1) {
-    numArr.push(num);
+    if (result !== 0) {
+      clearDisplay();
+    }
+    currentNumArr.push(num);
     history.push(num);
     step = 1;
-    firstNum = Number(numArr.join(''));
-    display.innerHTML = firstNum;
+    firstNum = Number(currentNumArr.join(''));
   } else if (step === 2) {
-    secNumArr.push(num);
+    currentNumArr.push(num);
     history.push(num);
-    secNum = Number(secNumArr.join(''));
-    display.innerHTML = secNum;
+    secondNum = Number(currentNumArr.join(''));
   }
-  updateHistoryDisplay(); 
+  updateDisplay();
 }
 
 function getOperator(op) {
-  if (step === 1) {
+  if (step === 1 || (step === 0 && result !== 0)) {
+    if (step === 0) {
+      firstNum = result;
+      history = [result];
+    }
     step = 2;
     operation = op;
     history.push(' ' + op + ' ');
-    updateHistoryDisplay(); 
+    currentNumArr = [];
+    updateDisplay();
+  } else if (step === 2) {
+    operation = op;
+    history.pop();
+    history.push(' ' + op + ' ');
+    updateDisplay();
   }
 }
 
 function clearDisplay() {
-  display.innerHTML = 0;
-  firstNum = null;
-  secNum = null;
+  firstNum = 0;
+  secondNum = 0;
   step = 0;
   operation = null;
   result = 0;
-  numArr = [];
-  secNumArr = [];
+  currentNumArr = [];
   history = [];
-  updateHistoryDisplay(); 
+  updateDisplay();
 }
 
-const calculateEquals = () => {
-  if (firstNum != null && secNum != null && operation != null) {
-    if (operation === '+') {
-      result = firstNum + secNum;
-    } else if (operation === '-') {
-      result = firstNum - secNum;
-    } else if (operation === '*') {
-      result = firstNum * secNum;
-    } else if (operation === '/') {
-      result = firstNum / secNum;
+function calculateEquals() {
+  if (step === 2 && operation) {
+    switch (operation) {
+      case '+': result = firstNum + secondNum; break;
+      case '-': result = firstNum - secondNum; break;
+      case '*': result = firstNum * secondNum; break;
+      case '/':
+        if (secondNum === 0) {
+          alert("Cannot divide by zero");
+          return;
+        }
+        result = firstNum / secondNum;
+        break;
     }
-
-    display.innerHTML = result;
+    
+    display.textContent = result;
     history.push(' = ' + result);
-    updateHistoryDisplay();
-
+    updateDisplay();
     firstNum = result;
-    firstNum = null;
-    secNum = null;
-    step = 1;
+    secondNum = 0;
+    step = 0;
     operation = null;
-    numArr = String(result).split('');
-    secNumArr = [];
+    currentNumArr = [];
   } else {
-    alert("Please make it a calculation formula first");
+    alert("Please enter a complete calculation formula");
   }
-};
+}
 
 function backSpace() {
-  if (step === 0 || step === 1) {
-    numArr.pop();
-    firstNum = Number(numArr.join('')) || 0;
-    display.innerHTML = firstNum;
-  } else if (step === 2) {
-    secNumArr.pop();
-    secNum = Number(secNumArr.join('')) || 0;
-    display.innerHTML = secNum;
+  if (step === 0 && result !== 0) {
+    clearDisplay();
+  } else {
+    currentNumArr.pop();
+    if (step === 0 || step === 1) {
+      firstNum = Number(currentNumArr.join('')) || 0;
+    } else if (step === 2) {
+      secondNum = Number(currentNumArr.join('')) || 0;
+    }
+    history.pop();
   }
-  history.pop();
-  updateHistoryDisplay(); 
+  updateDisplay();
 }
+
+updateDisplay();
